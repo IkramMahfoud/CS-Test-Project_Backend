@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Event;
 use Illuminate\Support\Str;
+use App\Notifications\DeleteEventNotification;
 class EventController extends Controller
 {
   protected $table = 'events';
@@ -86,14 +87,20 @@ class EventController extends Controller
     public function deleteOne($id)
     {
         // Find the event by its ID and delete it
-        $event = Event::findOrFail($id);
+        // $event = Event::findOrFail($id);
+        $event = Event::with('reservations')->findOrFail($id);
+        $reservations = $event->reservations; // Removed parentheses from reservations
 
-        if($event->delete()){
-          return response()->json([
-            'success' => true,
-            'message' => __(Str::of($this->table)->replace('_', '-') . '.deleted')
-          ]);
+        foreach ($reservations as $reservation) {
+            $user = $reservation->user()->first();
+            $user->notify(new DeleteEventNotification());
+        }
+
+        if ($event->delete()) {
+            return response()->json([
+                'success' => true,
+                'message' => __(Str::of($this->table)->replace('_', '-') . '.deleted')
+            ]);
         }
     }
-
 }

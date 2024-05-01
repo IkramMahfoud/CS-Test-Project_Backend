@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use App\Notifications\WelcomeEmailNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -59,6 +60,7 @@ class AuthController extends Controller
       'password' => Hash::make($request->password),
       'name' => $request->name
     ]);
+    $user->notify(new WelcomeEmailNotification());
     $user->assignRole('user');
     $token = $user->createToken('authToken', ['expires_in' => 60 * 24 * 30])->plainTextToken;
     return response()->json(['success' => true, 'data' => ['token' => $token], 'message' => __('auth.register_success')]);
