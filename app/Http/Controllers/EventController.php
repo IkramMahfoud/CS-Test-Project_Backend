@@ -33,7 +33,7 @@ class EventController extends Controller
         }
     }
 
-    
+
     public function readOne($id)
     {
         // Find the event by its ID
@@ -52,7 +52,7 @@ class EventController extends Controller
     public function readAll()
     {
         // Retrieve all events
-        $events = Event::with('user')->get();
+        $events = Event::with('user')->with('reservations')->get();
         if($events){
           return response()->json([
             'success' => true,

@@ -53,6 +53,19 @@ class ReservationController extends Controller
         }
     }
 
+
+    public function readMyReservations($id)
+    {
+        $reservations = Reservation::where("user_id",$id)->get();
+        if($reservations){
+          return response()->json([
+            'success' => true,
+            'data' => ['items' => $reservations],
+            'message' => __(Str::of($this->table)->replace('_', '-') . '.readAll')
+          ]);
+        }
+    }
+
     public function updateOne(Request $request, $id)
     {
         $reservation = Reservation::findOrFail($id);

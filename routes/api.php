@@ -32,7 +32,7 @@ Route::prefix('auth')->name('auth.')->group(function () {
 
 
 
-Route::middleware('auth:api')->group(function () {
+// Route::middleware('auth:api')->group(function () {
   Route::prefix('auth')->name('auth.')->group(function () {
     Route::controller(AuthController::class)->group(function () {
       Route::post('/me', 'me');
@@ -62,6 +62,7 @@ Route::middleware('auth:api')->group(function () {
       Route::post('/', 'createOne');
       Route::get('/{id}', 'readOne');
       Route::get('/', 'readAll');
+      Route::get('/{id}','readMyReservations');
       Route::put('/{id}', 'updateOne');
       Route::delete('/{id}', 'deleteOne');
     });
@@ -75,7 +76,7 @@ Route::middleware('auth:api')->group(function () {
       Route::delete('/{id}', 'deleteOne');
     });
   });
-});
+// });
 
 Route::get('/hello', function () {
   return response()->json(['success' => true, 'data' => ['message' => 'Hello World!']]);
